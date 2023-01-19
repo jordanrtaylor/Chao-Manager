@@ -1,12 +1,11 @@
 import os
-import ast
 import PySimpleGUI as GUI
 
-class Chao:
-    relatives = {"Parents": [], "Siblings": [], "Children": [], "Grand Parents": [], "Great Grand Parents": []}
-    ranks = ["S", "A", "B", "C", "D", "E"]
-    stats = {"Swimming": [], "Flying": [], "Power": [], "Running": [], "Stamina": []}
+relatives = {"Parents": "", "Siblings": "", "Children": "", "Grand Parents": "", "Great Grand Parents": ""}
+ranks = ["S", "A", "B", "C", "D", "E"]
+stats = {"Swimming": [], "Flying": [], "Power": [], "Running": [], "Stamina": []}
 
+class Chao:
     def __init__(chao, name, garden, relatives, stats, age, transformations, personality, schooling, color):
         chao.name = name
         chao.garden = garden
@@ -20,42 +19,61 @@ class Chao:
     
     # button used in Menu
     def add_chao(chao):
+        # Create all directories
+        if not os.path.exists("Dark"):
+            os.mkdir("Dark")
+
+        if not os.path.exists("Hero"):
+            os.mkdir("Hero")
+
+        if not os.path.exists("Neutral"):
+            os.mkdir("Neutral")
+        
         # Get user input for new chao's attributes
         name = GUI.PopupGetText("Enter the name of the new chao: ")
+        while Chao.check_if_chao_exists(name):
+            GUI.Popup("A Chao with this name already exists.")
+            name = GUI.PopupGetText("Enter the name of the new chao: ")
+
         garden = GUI.PopupGetText("Enter the garden the chao belongs to: ")
-        for key in Chao.relatives.keys():
-            relative = GUI.PopupGetText(f"Enter the {key} of the chao: ")
-            Chao.relatives[key].append(relative)
-
-        # Get user input for stats
-        for key in Chao.stats.keys():
+        while garden not in ['Hero', 'Dark', 'Neutral']:
+            GUI.Popup("Invalid garden. Please enter 'Hero', 'Dark', or 'Neutral'.")
+            garden = GUI.PopupGetText("Enter the garden the chao belongs to: ")
+        
+        for key in relatives.keys():
+            relative = GUI.PopupGetText(f"Enter the {key} of the chao: ") or None
+            relatives[key] = relative
+        
+        for key in stats.keys():
             rank = ""
-            while rank not in Chao.ranks:
-                rank = GUI.PopupGetText(f"Enter the rank of the chao in {key} (S, A, B, C, D, or E): ")
-            Chao.stats[key].append(rank)
+            while rank not in ranks:
+                rank = GUI.PopupGetText(f"Enter the rank of the chao in {key} (S, A, B, C, D, or E): ").upper()
+            stats[key].append(rank)
 
-        age = GUI.PopupGetText("Enter the age of the chao: ")
-        transformations = GUI.PopupGetText("Enter the transformations of the chao: ")
-        personality = GUI.PopupGetText("Enter the personality of the chao: ")
-        schooling = GUI.PopupGetText("Enter the schooling of the chao: ")
-        color = GUI.PopupGetText("Enter the color of the chao: ")
+        while True:
+            age = GUI.PopupGetText("Enter the age of the chao: ")
+            if age.isdigit():
+                age = int(age)
+                break
+            else:
+                GUI.Popup("Please enter a valid integer.")
+        
+        while True:
+            transformations = GUI.PopupGetText("Enter the transformations of the chao: ")
+            if transformations.isdigit():
+                transformations = int(transformations)
+                break
+            else:
+                GUI.Popup("Please enter a valid integer.")
+
+        personality = GUI.PopupGetText("Enter the personality of the chao: ") or None
+        schooling = GUI.PopupGetText("Enter the schooling of the chao: ") or None
+        color = GUI.PopupGetText("Enter the color of the chao: ") or None
 
         # Create a new Chao object with the inputted attributes
-        new_chao = Chao(name, garden, chao.relatives, chao.stats, age,
-                        transformations, personality, schooling, color)
+        new_chao = Chao(name, garden, relatives, stats, age, transformations, personality, schooling, color)
 
-        if not os.path.isdir(garden):
-            # create the directory
-            os.mkdir("{garden}/{name}.txt")
-        else:
-            print(f"{garden} already exists.")                
-        
-        # Check if the chao already exists
-        if not chao.check_if_chao_exists(new_chao.name):
-            # Check if the directory already exists
-            print("Chao " + name + " has been added to the list.")
-        else:
-            print("A chao with that name already exists.")
+        Chao.save_to_file(new_chao)
 
     # button used in Menu
     def modify_chao():
@@ -77,17 +95,38 @@ class Chao:
     def clear():
         return
 
-    def get_garden(chao, name):
+    def get_garden(chao):
         return 
 
-    def save_data(chao):
-        return
+    def save_to_file(chao):
+        # Create the file name
+        file_name = f"{chao.garden}/{chao.name}.txt"
+
+        # Open the file for writing
+        with open(file_name, "w") as file:
+            # Write the information of the new Chao object to the file
+            file.write(f"Name: {chao.name}\n")
+            file.write(f"Garden: {chao.garden}\n")
+
+            for key, value in relatives.items():
+                file.write(f"{key}: {value}\n")
+            
+            for key, value in stats.items():
+                file.write(f"{key}: {', '.join(value)}\n")
+
+            file.write(f"Age: {chao.age}\n")
+            file.write(f"Transformations: {chao.transformations}\n")
+            file.write(f"Personality: {chao.personality}\n")
+            file.write(f"Schooling: {chao.schooling}\n")
+            file.write(f"Color: {chao.color}\n")
+            print(f"Chao {chao.name} saved to {file_name}")
 
     def load_data():
         return
-
-    def check_if_chao_exists(name):
-        for chao in chao_list:
-            if chao.name == name:
+    
+    @classmethod
+    def check_if_chao_exists(cls, name):
+        for garden in ['Hero', 'Dark', 'Neutral']:
+            if os.path.isfile(f"{garden}/{name}.txt"):
                 return True
         return False

@@ -41,6 +41,7 @@ def main():
         # if the event is "Add Chao" then the add_chao function from the ChaoManager module will be called
         if event == "Add Chao":
             Manager.Chao.add_chao(chao)
+            Manager.Chao.save_to_file(chao)
 
         # if the event is "Modify Chao" then the modify_chao function from the ChaoManager module will be called
         if event == "Modify Chao":
