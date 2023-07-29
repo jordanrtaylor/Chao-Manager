@@ -1,66 +1,76 @@
 import ChaoManager as Manager
-import PySimpleGUI as GUI
+import tkinter as tk
+from tkinter import simpledialog
+from PIL import Image, ImageTk
 
-def main():
-    chao = Manager.Chao("", "", {}, {}, 0, 0, "", [], "")
+def MainMenu():
+    chao = Manager.Chao("", "", {}, {}, 0, [], "")
 
-    # Create the menu layout, this is a list of lists which contains the elements that will be shown in the GUI window
-    layout = [
-        [
-            # button element that when pressed will call the add_chao function from the ChaoManager module
-            GUI.Button('Add Chao'),
-            # button element that when pressed will call the modify_chao function from the ChaoManager module
-            GUI.Button('Modify Chao'),
-            # button element that when pressed will call the remove_chao function from the ChaoManager module
-            GUI.Button('Remove Chao'),
-            # button element that when pressed will call the declare_deceased function from the ChaoManager module
-            GUI.Button('Declare Deceased'),
-            # button element that when pressed will call the show_garden function from the ChaoManager module
-            GUI.Button('Show Chao'),
-            # button element that when pressed will call the clear function from the ChaoManager module
-            GUI.Button('Clear'),
-            # button element that when pressed will close the GUI window
-            GUI.Button('Quit')
-        ],
-        # Output element that will display text or information
-        [GUI.Output(size=(65, 30))]
-    ]
+    # create the main window
+    window = tk.Tk()
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
 
-    # Create the window, this will create a GUI window with the title "Chao Manager" and using the layout variable as the layout for the window
-    # element_justification = "c" is used to center the elements in the window
-    window = GUI.Window("Chao Manager", layout, element_justification="c", finalize = True)
+    window_width = window.winfo_reqwidth()
+    window_height = window.winfo_reqheight()
 
-    # Event loop to process the user input, this will run until the user closes the window or clicks the Quit button
-    while True:
-        event, values = window.Read()
+    x_offset = (screen_width - window_width) / 2
+    y_offset = (screen_height - window_height) / 2
 
-        # if the event is None or the event is "Quit" then the loop will break
-        if event in (None, "Quit"):
-            break
+    window.geometry(f"{window_width}x{window_height}+{int(x_offset)}+{int(y_offset)}")
+    window.geometry("954x477")
+    window.title("Chao Manager")
 
-        # if the event is "Add Chao" then the add_chao function from the ChaoManager module will be called
-        if event == "Add Chao":
-            Manager.Chao.add_chao(chao)
-            Manager.Chao.save_to_file(chao)
+    # Load the image file
+    img = Image.open("sonic.png")
+    background_image = ImageTk.PhotoImage(img)
 
-        # if the event is "Modify Chao" then the modify_chao function from the ChaoManager module will be called
-        if event == "Modify Chao":
-            Manager.modify_chao(chao.name)
+    # Create the background label
+    background_label = tk.Label(window, image=background_image)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        # if the event is "Remove Chao" then the remove_chao function from the ChaoManager module will be called
-        if event == "Remove Chao":
-            Manager.remove_chao(chao.name)
+    # Function to resize the background image when the window is resized
+    def resize_background(img, background_image, background_label):
+        img = img.resize((window.winfo_width(), window.winfo_height()), Image.LANCZOS)
+        background_image = ImageTk.PhotoImage(img)
+        background_label.configure(image=background_image)
+        background_label.image = background_image
 
-        # if the event is "Declare Deceased" then the declare_deceased function from the ChaoManager module will be called
-        if event == "Declare Deceased":
-            Manager.declare_deceased(chao.name)
+    window.bind("<Configure>", lambda event: resize_background(img, background_image, background_label))
 
-        # if the event is "Show Chao" then the show_chao function from the ChaoManager module will be called
-        if event == "Show Chao":
-            Manager.show_chao(chao.garden)
+    add_chao_button = tk.Button(window, text="Add Chao", command=lambda: Manager.Chao.add_chao(chao, window))
+    add_chao_button.grid(row=0, column=0, sticky="nsew")
+    add_chao_button.config(width=2, height=2)
 
-    # Close the window, this will close the GUI window
-    window.Close()
+    modify_chao_button = tk.Button(window, text="Modify Chao", command=lambda: Manager.Chao.modify_chao(chao))
+    modify_chao_button.grid(row=0, column=1, sticky="nsew")
+    modify_chao_button.config(width=2, height=2)
+
+    remove_chao_button = tk.Button(window, text="Remove Chao", command=lambda: Manager.Chao.remove_chao())
+    remove_chao_button.grid(row=0, column=2, sticky="nsew")
+    remove_chao_button.config(width=2, height=2)
+
+    declare_deceased_button = tk.Button(window, text="Declare Deceased", command=lambda: Manager.Chao.declare_deceased())
+    declare_deceased_button.grid(row=0, column=3, sticky="nsew")
+    declare_deceased_button.config(width=2, height=2)
+
+    show_garden_button = tk.Button(window, text="Show Chao Garden", command=lambda: Manager.Chao.show_garden(chao))
+    show_garden_button.grid(row=0, column=4, sticky="nsew")
+    show_garden_button.config(width=2, height=2)
+
+    clear_button = tk.Button(window, text="Clear", command=lambda: Manager.Chao.clear())
+    clear_button.grid(row=0, column=5, sticky="nsew")
+    clear_button.config(width=2, height=2)
+
+    quit_button = tk.Button(window, text="Quit", command=lambda: Manager.Chao.quit(window))
+    quit_button.grid(row=0, column=6, sticky="nsew")
+    quit_button.config(width=2, height=2)
+
+    for i in range(7):
+        window.columnconfigure(i, weight=1, minsize=100)
+    window.rowconfigure(1, weight=1, minsize=50)
+
+    window.mainloop()
 
 if __name__ == '__main__':
-    main()
+    MainMenu()

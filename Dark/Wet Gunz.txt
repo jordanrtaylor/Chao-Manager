@@ -1,0 +1,15 @@
+Name: Wet Gunz
+Garden: Dark
+Parents: 
+Siblings: 
+Children: 
+Grand Parents: 
+Great Grand Parents: 
+Swimming: 
+Flying: 
+Power: 
+Running: 
+Stamina: 
+Transformations: 4
+Schooling: Jumping
+Color: Purple
