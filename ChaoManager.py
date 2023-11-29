@@ -7,8 +7,7 @@ import Menu as Menu
 
 relatives = {"Parents": "", "Grand Parents": "", "Great Grand Parents": ""}
 ranks = ["S", "A", "B", "C", "D", "E"]
-stats = {"Swimming": [], "Flying": [],
-         "Power": [], "Running": [], "Stamina": []}
+stats = {"Swimming": [], "Flying": [], "Power": [], "Running": [], "Stamina": []}
 
 class Chao:
     def __init__(chao, name, garden, relatives, stats, transformations, schooling, color):
@@ -20,9 +19,7 @@ class Chao:
         chao.schooling = schooling
         chao.color = color
 
-    def add_chao(chao, window):
-        window.destroy()
-
+    def add_chao(chao):
         # Create all directories
         if not os.path.exists("Dark"):
             os.mkdir("Dark")
@@ -34,7 +31,7 @@ class Chao:
             os.mkdir("Neutral")
 
         # Handles user input for Chao name. Creates a new window for user input.
-        input_window = tk.Tk()
+        input_window = tk.Toplevel()
         #input_window.resizable(width=False, height=False)
         input_window.configure(bg="lightblue")
         screen_width = input_window.winfo_screenwidth()
@@ -43,12 +40,17 @@ class Chao:
         window_width = input_window.winfo_reqwidth()
         window_height = input_window.winfo_reqheight()
 
+        # Setting the fixed size before calculating the position
+        window_width = 500
+        window_height = 650
+
+        input_window.update()
+
+        # Calculate the center position
         x_offset = (screen_width - window_width) / 2
         y_offset = (screen_height - window_height) / 2
 
-        input_window.geometry(
-            f"{window_width}x{window_height}+{int(x_offset)}+{int(y_offset)}")
-        input_window.geometry("500x650")
+        input_window.geometry(f"{window_width}x{window_height}+{int(x_offset)}+{int(y_offset)}")
         input_window.title("Let's Add Your Chao!")
 
         # Name entry
@@ -302,16 +304,14 @@ class Chao:
 
         # Method to open the new window for entering relatives
         def open_relatives_window():
-            input_window.destroy()
-
-            relatives_window = tk.Tk()
+            relatives_window = tk.Toplevel()
             relatives_window.resizable(width=False, height=False)
             relatives_window.configure(bg="lightblue")
             screen_width = relatives_window.winfo_screenwidth()
             screen_height = relatives_window.winfo_screenheight()
 
-            window_width = relatives_window.winfo_reqwidth()
-            window_height = relatives_window.winfo_reqheight()
+            window_width = 636
+            window_height = 200
 
             x_offset = (screen_width - window_width) / 2
             y_offset = (screen_height - window_height) / 2
@@ -380,11 +380,11 @@ class Chao:
                 chao.relatives["Grand Parents"] = (grand_parent1.get(), grand_parent2.get())
                 chao.relatives["Great Grand Parents"] = (great_grand_parent1.get(), great_grand_parent2.get())
 
-                Chao.add_chao(chao, relatives_window)
+                Chao.add_chao(chao)
                 relatives_window.destroy()
 
             def on_relatives_cancel():
-                Chao.add_chao(chao, relatives_window)
+                relatives_window.destroy()
 
             # Confirm and Cancel buttons.
             confirm_button = tk.Button(relatives_window, text="Confirm", command=on_relatives_submit)
@@ -403,7 +403,7 @@ class Chao:
 
         # Method to open the new window for entering stats
         def open_stats_window():
-            stats_window = tk.Tk()
+            stats_window = tk.Toplevel()  # Changed to Toplevel instead of Tk
             stats_window.resizable(width=False, height=False)
             stats_window.configure(bg="lightblue")
             screen_width = stats_window.winfo_screenwidth()
@@ -417,51 +417,95 @@ class Chao:
 
             stats_window.geometry(
                 f"{window_width}x{window_height}+{int(x_offset)}+{int(y_offset)}")
-            stats_window.geometry("636x318")
+            stats_window.geometry("400x350")
             stats_window.title("Add Stats!")
 
-            # Parents entry
-            parent1 = tk.StringVar()
-            parent2 = tk.StringVar()
-            parents_label = tk.Label(
-                stats_window, text="Parents", bg="lightblue", font=("Comic Sans MS", 10))
-            parents_label.place(relx=0.1, rely=0.1)
+            # Stats entry
+            stats = ["Swim", "Fly", "Run", "Power", "Stamina"]
+            ranks = ["S", "A", "B", "C", "D", "E"]
 
-            parent1_label = tk.Label(
-                stats_window, text="Parent 1", bg="lightblue", font=("Comic Sans MS", 10))
-            parent1_label.place(relx=0.4, rely=0.03)
+            stats_vars = {stat: tk.StringVar(value="S") for stat in stats}
 
-            parent2_label = tk.Label(
-                stats_window, text="Parent 2", bg="lightblue", font=("Comic Sans MS", 10))
-            parent2_label.place(relx=0.65, rely=0.03)
+            for i, stat in enumerate(stats):
+                label = tk.Label(stats_window, text=stat, bg="lightblue", font=("Comic Sans MS", 10))
+                label.place(relx=0.1, rely=0.2 + i*0.1)
+                
+                radio_var = stats_vars[stat]  # Unique variable for each stat's radio buttons
+                for j, rank in enumerate(ranks):
+                    radio_button = tk.Radiobutton(stats_window, text=rank, variable=radio_var, value=rank, background='lightblue', activebackground='lightblue')
+                    radio_button.place(relx=0.3 + j*0.1, rely=0.2 + i*0.1)
+            # Confirm and Cancel buttons
+            def on_stats_submit():
+                # Your functionality for Confirm button
+                stats_values = {stat: var.get() for stat, var in stats_vars.items()}
+                print("Confirmed!", stats_values)
+                # You would probably want to do something with stats_values here, like storing them or passing them to another function
 
-            parents1_entry = tk.Entry(
-                stats_window, textvariable=parent1, width=21)
-            parents1_entry.place(relx=0.4, rely=0.1)
+            def on_stats_cancel():
+                # Your functionality for Cancel button
+                stats_window.destroy()
 
-            parents2_entry = tk.Entry(
-                stats_window, textvariable=parent2, width=21)
-            parents2_entry.place(relx=0.65, rely=0.1)
+            # Confirm and Cancel buttons.
+            confirm_button = tk.Button(stats_window, text="Confirm", command=on_stats_submit)
+            confirm_button.place(relx=.20, rely=1, y=-10, width=100, anchor='sw')
+
+            cancel_button = tk.Button(stats_window, text="Cancel", command=on_stats_cancel)
+            cancel_button.place(relx=.80, rely=1, y=-10, width=100, anchor='se')
 
             stats_window.mainloop()
 
         def on_submit():
-            chao.name = name_entry.get()
-            
+            chao.name = name_entry.get().strip()  # .strip() to remove any leading/trailing spaces
             valid_values = ['dark', 'neutral', 'hero']
             chao.garden = garden_entry.get().lower()
             if chao.garden not in valid_values:
                 tk.messagebox.showerror("Invalid garden", "Please enter 'Dark', 'Neutral', or 'Hero'.")
-            else:
-                tk.messagebox.showinfo(
-                    "Chao Added!", f"Chao name: {chao.name}\nChao garden: {chao.garden}")
-            input_window.destroy()
+                return  # Return here to avoid closing the window if the garden is not valid
+            
+            # Use the garden to determine the directory
+            directory_path = os.path.join(chao.garden.capitalize())
 
-            chao.garden = relatives
+            # Make sure the directory exists
+            if not os.path.exists(directory_path):
+                os.makedirs(directory_path)
+            
+            chao.transformations = int(transformations_entry.get())  # Assuming transformations should be an integer
+            chao.color = color_entry.get()
+            lesson_levels = {
+                'Bell Level': bell_level,
+                'Drum Level': drum_level,
+                'Maracas Level': maracas_level,
+                'Step Dance Level': step_dance_level,
+                'Castanets Level': castanets_level,
+                'Exercise Level': exercise_level,
+                'Shake Dance Level': shake_dance_level,
+                'Tambourine Level': tambourine_level,
+                'Cymbals Level': cymbals_level,
+                'Flute Level': flute_level,
+                'Song Level': song_level,
+                'Trumpet Level': trumpet_level,
+                'Drawing Level': drawing_level,
+                'Gogo Dance Level': gogo_dance_level,
+                'Spin Dance Level': spin_dance_level,
+            }
+
+            # Create the filename using the Chao's name
+            filename = f"{chao.name}.txt"
+            file_path = os.path.join(directory_path, filename)
+
+            # Now write the Chao's data to the file
+            with open(file_path, 'w') as file:
+                file.write(f"Name: {chao.name}\n")
+                file.write(f"Garden: {chao.garden}\n")
+                file.write(f"Color: {chao.color}\n")
+                for lesson, level_var in lesson_levels.items():
+                    level = level_var.get()  # This gets the value from the IntVar
+                    file.write(f"{lesson}: {level}\n")
+
+            input_window.destroy()
 
         def on_cancel():
             input_window.destroy()
-            Menu.MainMenu()
 
         # Submit and Cancel buttons.
         submit_button = tk.Button(input_window, text="Submit", command=on_submit)

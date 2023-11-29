@@ -14,15 +14,22 @@ def MainMenu():
     window_width = window.winfo_reqwidth()
     window_height = window.winfo_reqheight()
 
+    window.title("Chao Manager")
+
+    # Setting the fixed size before calculating the position
+    window_width = 954
+    window_height = 477
+
+    window.update()
+
+    # Calculate the center position
     x_offset = (screen_width - window_width) / 2
     y_offset = (screen_height - window_height) / 2
 
     window.geometry(f"{window_width}x{window_height}+{int(x_offset)}+{int(y_offset)}")
-    window.geometry("954x477")
-    window.title("Chao Manager")
 
     # Load the image file
-    img = Image.open("sonic.png")
+    img = Image.open("images\\family.png")
     background_image = ImageTk.PhotoImage(img)
 
     # Create the background label
@@ -38,7 +45,7 @@ def MainMenu():
 
     window.bind("<Configure>", lambda event: resize_background(img, background_image, background_label))
 
-    add_chao_button = tk.Button(window, text="Add Chao", command=lambda: Manager.Chao.add_chao(chao, window))
+    add_chao_button = tk.Button(window, text="Add Chao", command=lambda: Manager.Chao.add_chao(chao))
     add_chao_button.grid(row=0, column=0, sticky="nsew")
     add_chao_button.config(width=2, height=2)
 
