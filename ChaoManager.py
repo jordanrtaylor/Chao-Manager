@@ -379,8 +379,6 @@ class Chao:
                 chao.relatives["Parents"] = (parent1.get(), parent2.get())
                 chao.relatives["Grand Parents"] = (grand_parent1.get(), grand_parent2.get())
                 chao.relatives["Great Grand Parents"] = (great_grand_parent1.get(), great_grand_parent2.get())
-
-                Chao.add_chao(chao)
                 relatives_window.destroy()
 
             def on_relatives_cancel():
@@ -436,10 +434,10 @@ class Chao:
                     radio_button.place(relx=0.3 + j*0.1, rely=0.2 + i*0.1)
             # Confirm and Cancel buttons
             def on_stats_submit():
-                # Your functionality for Confirm button
-                stats_values = {stat: var.get() for stat, var in stats_vars.items()}
-                print("Confirmed!", stats_values)
-                # You would probably want to do something with stats_values here, like storing them or passing them to another function
+                # Update chao.stats with the new values
+                for stat in stats:
+                    chao.stats[stat] = stats_vars[stat].get()
+                stats_window.destroy()
 
             def on_stats_cancel():
                 # Your functionality for Cancel button
@@ -501,6 +499,14 @@ class Chao:
                 for lesson, level_var in lesson_levels.items():
                     level = level_var.get()  # This gets the value from the IntVar
                     file.write(f"{lesson}: {level}\n")
+                
+                # Write relatives to the file
+                for relation, names in chao.relatives.items():
+                    file.write(f"{relation}: {', '.join(names)}\n")
+                
+                # Write stats to the file
+                for stat, value in chao.stats.items():
+                    file.write(f"{stat}: {value}\n")
 
             input_window.destroy()
 
