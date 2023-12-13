@@ -42,7 +42,7 @@ class Chao:
 
         # Setting the fixed size before calculating the position
         window_width = 500
-        window_height = 650
+        window_height = 800
 
         input_window.update()
 
@@ -62,238 +62,263 @@ class Chao:
         name_entry.place(relx=0.6, rely=0.05)
 
         # Garden entry
-        garden = tk.StringVar()
-        garden_label = tk.Label(input_window, text="Home Garden (Hero, Dark, Neutral)", bg="lightblue", font=("Comic Sans MS", 10))
-        garden_label.place(relx=0.1, rely=0.08)
+        garden_label = tk.Label(input_window, text="Garden", bg="lightblue", font=("Comic Sans MS", 10))
+        garden_label.place(relx=0.1, rely=0.085)
 
-        garden_entry = tk.Entry(input_window, textvariable=garden, width=22)
-        garden_entry.place(relx=0.6, rely=0.08)
+        garden_options = ['Hero', 'Dark', 'Neutral']
+        garden = tk.StringVar()
+        garden.set(garden_options[0])  # default value
+        garden_menu = tk.OptionMenu(input_window, garden, *garden_options)
+        garden_menu.place(relx=0.6, rely=0.08)
 
         # Transformations entry
         transformations = tk.StringVar()
         transformations_label = tk.Label(input_window, text="Transformations Count", bg="lightblue", font=("Comic Sans MS", 10))
-        transformations_label.place(relx=0.1, rely=0.11)
+        transformations_label.place(relx=0.1, rely=0.125)
 
         transformations_entry = tk.Entry(input_window, textvariable=transformations, width=22)
-        transformations_entry.place(relx=0.6, rely=0.11)
+        transformations_entry.place(relx=0.6, rely=0.125)
 
         # Color entry
-        color = tk.StringVar()
-        color_label = tk.Label(input_window, text="Color", font=("Comic Sans MS", 10))
-        color_label.configure(bg="lightblue")
-        color_label.place(relx=0.1, rely=0.14)
+        color_label = tk.Label(input_window, text="Color", bg="lightblue", font=("Comic Sans MS", 10))
+        color_label.place(relx=0.1, rely=0.155)
 
-        color_entry = tk.Entry(input_window, textvariable=color, width=22)
-        color_entry.place(relx=0.6, rely=0.14)
+        color_options = ['Regular', 'White', 'Red', 'Blue', 'Yellow', 'Pink', 'Purple', 'Sky Blue', 'Orange', 'Green', 'Brown', 'Grey', 'Lime Green', 'Black']
+        color = tk.StringVar()
+        color.set(color_options[0])  # default value
+        color_menu = tk.OptionMenu(input_window, color, *color_options)
+        color_menu.place(relx=0.6, rely=0.155)
+
+        # Checkboxes for color types
+        monotone_var = tk.BooleanVar()
+        two_tone_var = tk.BooleanVar()
+        shiny_var = tk.BooleanVar()
+
+        # Toggle functions for checkboxes
+        def toggle_monotone():
+            if monotone_var.get():
+                two_tone_var.set(False)
+
+        def toggle_two_tone():
+            if two_tone_var.get():
+                monotone_var.set(False)
+
+        monotone_check = tk.Checkbutton(input_window, text="Monotone", var=monotone_var, bg="lightblue", command=toggle_monotone)
+        two_tone_check = tk.Checkbutton(input_window, text="Two-Tone", var=two_tone_var, bg="lightblue", command=toggle_two_tone)
+        shiny_check = tk.Checkbutton(input_window, text="Shiny", var=shiny_var, bg="lightblue")
+
+        monotone_check.place(relx=0.1, rely=0.2)
+        two_tone_check.place(relx=0.4, rely=0.2)
+        shiny_check.place(relx=0.7, rely=0.2)
 
         # School entry
         schooling_label = tk.Label(input_window, text="Select Lessons Learned", font=("Comic Sans MS", 10, "bold"), anchor="center")
         schooling_label.configure(bg="lightblue")
-        schooling_label.place(relx=0.5, rely=0.2, anchor="center")
+        schooling_label.place(relx=0.5, rely=0.25, anchor="center")
 
         # Lesson Information
         # Lesson label
         lesson_label = tk.Label(input_window, text="Lesson Name", font=("Comic Sans MS", 10, "bold"))
         lesson_label.config(background='lightblue', activebackground='lightblue')
-        lesson_label.place(relx=0.2, rely=0.22)
+        lesson_label.place(relx=0.2, rely=0.26)
 
         # Level label
         level_label = tk.Label(input_window, text="Levels 0 - 5 (0 for none)", font=("Comic Sans MS", 10, "bold"))
         level_label.config(background='lightblue', activebackground='lightblue')
-        level_label.place(relx=0.5, rely=0.22)
+        level_label.place(relx=0.5, rely=0.26)
 
         # Bell Lesson
         bell_label = tk.Label(input_window, text="Bell", font=("Comic Sans MS", 10))
         bell_label.config(background='lightblue', activebackground='lightblue')
-        bell_label.place(relx=0.2, rely=0.26)
+        bell_label.place(relx=0.2, rely=0.29)
 
         bell_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=bell_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.26)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.29)  # modify positioning based on i
 
         bell_level.set(0)  # set default level to 0
 
         # Drum Lesson
         drum_label = tk.Label(input_window, text="Drum", font=("Comic Sans MS", 10))
         drum_label.config(background='lightblue', activebackground='lightblue')
-        drum_label.place(relx=0.2, rely=0.3)
+        drum_label.place(relx=0.2, rely=0.33)
 
         drum_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=drum_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.3)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.33)  # modify positioning based on i
 
         drum_level.set(0)  # set default level to 0
 
         # Maracas Lesson
         maracas_label = tk.Label(input_window, text="Maracas", font=("Comic Sans MS", 10))
         maracas_label.config(background='lightblue', activebackground='lightblue')
-        maracas_label.place(relx=0.2, rely=0.34)
+        maracas_label.place(relx=0.2, rely=0.37)
 
         maracas_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=maracas_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.34)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.37)  # modify positioning based on i
 
         maracas_level.set(0)  # set default level to 0
 
         # Step Dance Lesson
         step_dance_label = tk.Label(input_window, text="Step Dance", font=("Comic Sans MS", 10))
         step_dance_label.config(background='lightblue', activebackground='lightblue')
-        step_dance_label.place(relx=0.2, rely=0.38)
+        step_dance_label.place(relx=0.2, rely=0.41)
 
         step_dance_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=step_dance_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.38)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.41)  # modify positioning based on i
 
         step_dance_level.set(0)  # set default level to 0
         
         # Castanets Lesson
         castanets_label = tk.Label(input_window, text="Castanets", font=("Comic Sans MS", 10))
         castanets_label.config(background='lightblue', activebackground='lightblue')
-        castanets_label.place(relx=0.2, rely=0.42)
+        castanets_label.place(relx=0.2, rely=0.45)
 
         castanets_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=castanets_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.42)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.45)  # modify positioning based on i
 
         castanets_level.set(0)  # set default level to 0
 
         # Exercise Lesson
         exercise_label = tk.Label(input_window, text="Exercise", font=("Comic Sans MS", 10))
         exercise_label.config(background='lightblue', activebackground='lightblue')
-        exercise_label.place(relx=0.2, rely=0.46)
+        exercise_label.place(relx=0.2, rely=0.49)
 
         exercise_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=exercise_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.46)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.49)  # modify positioning based on i
 
         exercise_level.set(0)  # set default level to 0
 
         # Shake Dance Lesson
         shake_dance_label = tk.Label(input_window, text="Shake Dance", font=("Comic Sans MS", 10))
         shake_dance_label.config(background='lightblue', activebackground='lightblue')
-        shake_dance_label.place(relx=0.2, rely=0.5)
+        shake_dance_label.place(relx=0.2, rely=0.53)
 
         shake_dance_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=shake_dance_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.5)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.53)  # modify positioning based on i
 
         shake_dance_level.set(0)  # set default level to 0
 
         # Tambourine Lesson
         tambourine_label = tk.Label(input_window, text="Tambourine", font=("Comic Sans MS", 10))
         tambourine_label.config(background='lightblue', activebackground='lightblue')
-        tambourine_label.place(relx=0.2, rely=0.54)
+        tambourine_label.place(relx=0.2, rely=0.57)
 
         tambourine_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=tambourine_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.54)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.57)  # modify positioning based on i
 
         tambourine_level.set(0)  # set default level to 0
 
         # Cymbals Lesson
         cymbals_label = tk.Label(input_window, text="Cymbals", font=("Comic Sans MS", 10))
         cymbals_label.config(background='lightblue', activebackground='lightblue')
-        cymbals_label.place(relx=0.2, rely=0.58)
+        cymbals_label.place(relx=0.2, rely=0.61)
 
         cymbals_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=cymbals_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.58)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.61)  # modify positioning based on i
 
         cymbals_level.set(0)  # set default level to 0
 
         # Flute Lesson
         flute_label = tk.Label(input_window, text="Flute", font=("Comic Sans MS", 10))
         flute_label.config(background='lightblue', activebackground='lightblue')
-        flute_label.place(relx=0.2, rely=0.62)
+        flute_label.place(relx=0.2, rely=0.65)
 
         flute_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=flute_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.62)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.65)  # modify positioning based on i
 
         flute_level.set(0)  # set default level to 0
 
         # Song Lesson
         song_label = tk.Label(input_window, text="Song", font=("Comic Sans MS", 10))
         song_label.config(background='lightblue', activebackground='lightblue')
-        song_label.place(relx=0.2, rely=0.66)
+        song_label.place(relx=0.2, rely=0.69)
 
         song_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=song_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.66)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.69)  # modify positioning based on i
 
         song_level.set(0)  # set default level to 0
 
         # Trumpet Lesson
         trumpet_label = tk.Label(input_window, text="Trumpet", font=("Comic Sans MS", 10))
         trumpet_label.config(background='lightblue', activebackground='lightblue')
-        trumpet_label.place(relx=0.2, rely=0.7)
+        trumpet_label.place(relx=0.2, rely=0.73)
 
         trumpet_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=trumpet_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.7)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.73)  # modify positioning based on i
 
         trumpet_level.set(0)  # set default level to 0
 
         # Drawing Lesson
         drawing_label = tk.Label(input_window, text="Drawing", font=("Comic Sans MS", 10))
         drawing_label.config(background='lightblue', activebackground='lightblue')
-        drawing_label.place(relx=0.2, rely=0.74)
+        drawing_label.place(relx=0.2, rely=0.77)
 
         drawing_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=drawing_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.74)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.77)  # modify positioning based on i
 
         drawing_level.set(0)  # set default level to 0
 
         # Gogo Dance Lesson
         gogo_dance_label = tk.Label(input_window, text="Gogo Dance", font=("Comic Sans MS", 10))
         gogo_dance_label.config(background='lightblue', activebackground='lightblue')
-        gogo_dance_label.place(relx=0.2, rely=0.78)
+        gogo_dance_label.place(relx=0.2, rely=0.81)
 
         gogo_dance_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=gogo_dance_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.78)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.81)  # modify positioning based on i
 
         gogo_dance_level.set(0)  # set default level to 0
 
         # Spin Dance Lesson
         spin_dance_label = tk.Label(input_window, text="Spin Dance", font=("Comic Sans MS", 10))
         spin_dance_label.config(background='lightblue', activebackground='lightblue')
-        spin_dance_label.place(relx=0.2, rely=0.82)
+        spin_dance_label.place(relx=0.2, rely=0.85)
 
         spin_dance_level = tk.IntVar()  # this will hold the level for the Bell lesson
         for i in range(6):  # we create a radio button for each level
             rad_button = tk.Radiobutton(input_window, variable=spin_dance_level, value=i, font=("Comic Sans MS", 10))
             rad_button.config(background='lightblue', activebackground='lightblue')
-            rad_button.place(relx=0.5 + (i*0.03), rely=0.82)  # modify positioning based on i
+            rad_button.place(relx=0.5 + (i*0.03), rely=0.85)  # modify positioning based on i
 
         spin_dance_level.set(0)  # set default level to 0
 
@@ -455,11 +480,19 @@ class Chao:
         def on_submit():
             chao.name = name_entry.get().strip()  # .strip() to remove any leading/trailing spaces
             valid_values = ['dark', 'neutral', 'hero']
-            chao.garden = garden_entry.get().lower()
-            if chao.garden not in valid_values:
-                tk.messagebox.showerror("Invalid garden", "Please enter 'Dark', 'Neutral', or 'Hero'.")
-                return  # Return here to avoid closing the window if the garden is not valid
-            
+            chao.garden = garden.get()
+            chao.color = color.get()
+
+            # Construct the color type string
+            color_types = []
+            if monotone_var.get():
+                color_types.append("Monotone")
+            if two_tone_var.get():
+                color_types.append("Two-Tone")
+            if shiny_var.get():
+                color_types.append("Shiny")
+            color_type_str = ', '.join(color_types)
+
             # Use the garden to determine the directory
             directory_path = os.path.join(chao.garden.capitalize())
 
@@ -467,46 +500,42 @@ class Chao:
             if not os.path.exists(directory_path):
                 os.makedirs(directory_path)
             
-            chao.transformations = int(transformations_entry.get())  # Assuming transformations should be an integer
-            chao.color = color_entry.get()
+            try:
+                chao.transformations = int(transformations_entry.get())
+            except ValueError:
+                tk.messagebox.showerror("Invalid Input", "Please enter an integer value for transformations.")
+                return
+
             lesson_levels = {
-                'Bell Level': bell_level,
-                'Drum Level': drum_level,
-                'Maracas Level': maracas_level,
-                'Step Dance Level': step_dance_level,
-                'Castanets Level': castanets_level,
-                'Exercise Level': exercise_level,
-                'Shake Dance Level': shake_dance_level,
-                'Tambourine Level': tambourine_level,
-                'Cymbals Level': cymbals_level,
-                'Flute Level': flute_level,
-                'Song Level': song_level,
-                'Trumpet Level': trumpet_level,
-                'Drawing Level': drawing_level,
-                'Gogo Dance Level': gogo_dance_level,
-                'Spin Dance Level': spin_dance_level,
+                'Bell Level': bell_level.get(),
+                'Drum Level': drum_level.get(),
+                'Maracas Level': maracas_level.get(),
+                'Step Dance Level': step_dance_level.get(),
+                'Castanets Level': castanets_level.get(),
+                'Exercise Level': exercise_level.get(),
+                'Shake Dance Level': shake_dance_level.get(),
+                'Tambourine Level': tambourine_level.get(),
+                'Cymbals Level': cymbals_level.get(),
+                'Flute Level': flute_level.get(),
+                'Song Level': song_level.get(),
+                'Trumpet Level': trumpet_level.get(),
+                'Drawing Level': drawing_level.get(),
+                'Gogo Dance Level': gogo_dance_level.get(),
+                'Spin Dance Level': spin_dance_level.get(),
             }
 
-            # Create the filename using the Chao's name
-            filename = f"{chao.name}.txt"
-            file_path = os.path.join(directory_path, filename)
-
             # Now write the Chao's data to the file
-            with open(file_path, 'w') as file:
+            with open(os.path.join(directory_path, f"{chao.name}.txt"), 'w') as file:
                 file.write(f"Name: {chao.name}\n")
                 file.write(f"Garden: {chao.garden}\n")
-                file.write(f"Color: {chao.color}\n")
-                for lesson, level_var in lesson_levels.items():
-                    level = level_var.get()  # This gets the value from the IntVar
+                file.write(f"Color: {chao.color} ({color_type_str})\n")  # Include color types here
+                for lesson, level in lesson_levels.items():
                     file.write(f"{lesson}: {level}\n")
-                
-                # Write relatives to the file
                 for relation, names in chao.relatives.items():
                     file.write(f"{relation}: {', '.join(names)}\n")
-                
-                # Write stats to the file
                 for stat, value in chao.stats.items():
                     file.write(f"{stat}: {value}\n")
+                file.write(f"Transformations: {chao.transformations}\n")
 
             input_window.destroy()
 
