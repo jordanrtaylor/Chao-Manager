@@ -556,8 +556,66 @@ class Chao:
 
         #Chao.save_to_file(new_chao)
 
+    @staticmethod
+    def center_window(window, width, height):
+        screen_width = window.winfo_screenwidth()
+        screen_height = window.winfo_screenheight()
+        x = (screen_width / 2) - (width / 2)
+        y = (screen_height / 2) - (height / 2)
+        window.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
+
+    @staticmethod
+    def display_chao_data(name, garden):
+        data_window = tk.Toplevel()
+        data_window.title(f"{name}'s Data")
+        Chao.center_window(data_window, 400, 600)
+        data = Chao.load_data(name, garden)
+
+        entries = {}
+        for key, value in data.items():
+            frame = tk.Frame(data_window)
+            frame.pack(fill=tk.X, padx=5, pady=5)
+            label = tk.Label(frame, text=f"{key}: ", width=20)
+            label.pack(side=tk.LEFT)
+            entry = tk.Entry(frame)
+            entry.pack(fill=tk.X, expand=True)
+            entry.insert(0, value)
+            entries[key] = entry
+
+        def save_data():
+            for key, entry in entries.items():
+                data[key] = entry.get()
+            Chao.save_data(name, garden, data)
+            messagebox.showinfo("Success", "Chao data updated successfully!")
+            data_window.destroy()
+
+        save_button = tk.Button(data_window, text="Save", command=save_data)
+        save_button.pack(pady=10)
+
     def modify_chao(chao):
-        Chao.not_yet_implemented()
+        modify_window = tk.Toplevel()
+        modify_window.title("Modify Chao")
+        Chao.center_window(modify_window, 600, 400)
+
+        gardens = ['Hero', 'Dark', 'Neutral']
+        garden_labels = {garden: tk.Label(modify_window, text=garden.upper()) for garden in gardens}
+        chao_buttons = {garden: [] for garden in gardens}
+
+        for garden, label in garden_labels.items():
+            label.pack()
+            if os.path.exists(garden):
+                for chao_file in os.listdir(garden):
+                    chao_name = chao_file.split('.')[0]
+                    button = tk.Button(modify_window, text=chao_name, 
+                                       command=lambda name=chao_name, gd=garden: Chao.display_chao_data(name, gd))
+                    button.pack()
+                    chao_buttons[garden].append(button)
+    
+    @staticmethod
+    def save_data(name, garden, data):
+        with open(f"{garden}/{name}.txt", "w") as file:
+            for key, value in data.items():
+                file.write(f"{key}: {value}\n")
 
     def remove_chao():
         Chao.not_yet_implemented()
