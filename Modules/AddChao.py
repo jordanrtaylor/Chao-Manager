@@ -1,25 +1,7 @@
 import tkinter as tk
-from tkinter import messagebox
 import os
-from enum import Enum
-from PIL import Image, ImageTk
-import Menu as Menu
 
-relatives = {"Parents": "", "Grand Parents": "", "Great Grand Parents": ""}
-ranks = ["S", "A", "B", "C", "D", "E"]
-stats = {"Swimming": [], "Flying": [], "Power": [], "Running": [], "Stamina": []}
-
-class Chao:
-    def __init__(chao, name, garden, relatives, stats, transformations, schooling, color):
-        chao.name = name
-        chao.garden = garden
-        chao.relatives = relatives
-        chao.stats = stats
-        chao.transformations = transformations
-        chao.schooling = schooling
-        chao.color = color
-
-    def add_chao(chao):
+def add_chao(chao):
         # Create all directories
         if not os.path.exists("Dark"):
             os.mkdir("Dark")
@@ -32,7 +14,7 @@ class Chao:
 
         # Handles user input for Chao name. Creates a new window for user input.
         input_window = tk.Toplevel()
-        #input_window.resizable(width=False, height=False)
+        input_window.resizable(width=False, height=False)
         input_window.configure(bg="lightblue")
         screen_width = input_window.winfo_screenwidth()
         screen_height = input_window.winfo_screenheight()
@@ -479,7 +461,6 @@ class Chao:
 
         def on_submit():
             chao.name = name_entry.get().strip()  # .strip() to remove any leading/trailing spaces
-            valid_values = ['dark', 'neutral', 'hero']
             chao.garden = garden.get()
             chao.color = color.get()
 
@@ -501,10 +482,14 @@ class Chao:
                 os.makedirs(directory_path)
             
             try:
-                chao.transformations = int(transformations_entry.get())
+                transformations_value = int(transformations_entry.get())
+                if transformations_value < 0:
+                    raise ValueError("Negative value not allowed")
             except ValueError:
-                tk.messagebox.showerror("Invalid Input", "Please enter an integer value for transformations.")
+                tk.messagebox.showerror("Invalid Input", "Please enter a positive integer for transformations.")
                 return
+            
+            chao.transformations = transformations_value
 
             lesson_levels = {
                 'Bell Level': bell_level.get(),
@@ -550,143 +535,3 @@ class Chao:
         cancel_button.place(relx=.75, rely=1, y=-10, width=100, anchor='sw')
 
         input_window.mainloop()
-
-        # Create a new Chao object with the inputted attributes
-        # new_chao = Chao(name, garden, relatives, stats, transformations, schooling, color)
-
-        #Chao.save_to_file(new_chao)
-
-    @staticmethod
-    def center_window(window, width, height):
-        screen_width = window.winfo_screenwidth()
-        screen_height = window.winfo_screenheight()
-        x = (screen_width / 2) - (width / 2)
-        y = (screen_height / 2) - (height / 2)
-        window.geometry(f'{width}x{height}+{int(x)}+{int(y)}')
-
-    @staticmethod
-    def display_chao_data(name, garden):
-        data_window = tk.Toplevel()
-        data_window.title(f"{name}'s Data")
-        Chao.center_window(data_window, 400, 600)
-        data = Chao.load_data(name, garden)
-
-        entries = {}
-        for key, value in data.items():
-            frame = tk.Frame(data_window)
-            frame.pack(fill=tk.X, padx=5, pady=5)
-            label = tk.Label(frame, text=f"{key}: ", width=20)
-            label.pack(side=tk.LEFT)
-            entry = tk.Entry(frame)
-            entry.pack(fill=tk.X, expand=True)
-            entry.insert(0, value)
-            entries[key] = entry
-
-        def save_data():
-            for key, entry in entries.items():
-                data[key] = entry.get()
-            Chao.save_data(name, garden, data)
-            messagebox.showinfo("Success", "Chao data updated successfully!")
-            data_window.destroy()
-
-        save_button = tk.Button(data_window, text="Save", command=save_data)
-        save_button.pack(pady=10)
-
-    def modify_chao(chao):
-        modify_window = tk.Toplevel()
-        modify_window.title("Modify Chao")
-        Chao.center_window(modify_window, 600, 400)
-
-        gardens = ['Hero', 'Dark', 'Neutral']
-        garden_labels = {garden: tk.Label(modify_window, text=garden.upper()) for garden in gardens}
-        chao_buttons = {garden: [] for garden in gardens}
-
-        for garden, label in garden_labels.items():
-            label.pack()
-            if os.path.exists(garden):
-                for chao_file in os.listdir(garden):
-                    chao_name = chao_file.split('.')[0]
-                    button = tk.Button(modify_window, text=chao_name, 
-                                       command=lambda name=chao_name, gd=garden: Chao.display_chao_data(name, gd))
-                    button.pack()
-                    chao_buttons[garden].append(button)
-    
-    @staticmethod
-    def save_data(name, garden, data):
-        with open(f"{garden}/{name}.txt", "w") as file:
-            for key, value in data.items():
-                file.write(f"{key}: {value}\n")
-
-    def remove_chao():
-        Chao.not_yet_implemented()
-
-    def declare_deceased():
-        Chao.not_yet_implemented()
-    
-    def show_garden(garden):
-        Chao.not_yet_implemented()
-    
-    def clear():
-        Chao.not_yet_implemented()
-    
-    def quit(window):
-        window.destroy()
-    
-    def get_garden(chao):
-        Chao.not_yet_implemented()
-
-    def save_to_file(chao):
-        # Create the file name
-        file_name = f"{chao.garden}/{chao.name}.txt"
-
-        # Open the file for writing
-        with open(file_name, "w") as file:
-            # Write the information of the new Chao object to the file
-            file.write(f"Name: {chao.name}\n")
-            file.write(f"Garden: {chao.garden}\n")
-            
-            for key, value in relatives.items():
-                file.write(f"{key}: {value}\n")
-
-            for key, value in stats.items():
-                file.write(f"{key}: {', '.join(value)}\n")
-
-            file.write(f"Transformations: {chao.transformations}\n")
-            file.write(f"Schooling: {chao.schooling}\n")
-            file.write(f"Color: {chao.color}\n")
-            print(f"Chao {chao.name} saved to {file_name}")
-
-    def load_data(name, garden):
-        # Creating empty dict to store variables
-        data = {}
-
-        # Open the file
-        with open(f"{garden}/{name}.txt", "r") as file:
-            # Iterate over each line in the file
-            for line in file:
-                # Strip leading/trailing whitespace and split the line by colon
-                key, value = line.strip().split(':')
-                # Strip leading/trailing whitespace from value
-                value = value.strip()
-                # Add the key-value pair to the data dict
-                data[key] = value
-
-        return data
-
-    @classmethod
-    def check_if_chao_exists(cls, name):
-        for garden in ['Hero', 'Dark', 'Neutral']:
-            if os.path.isfile(f"{garden}/{name}.txt"):
-                return True
-        return False
-
-    def not_yet_implemented():
-        # Create a new Toplevel window
-        popup = tk.Toplevel()
-        popup.geometry("400x100")
-        popup.resizable(width=False, height=False)
-        label = tk.Label(popup, text="Not yet implemented.")
-        label.pack()
-        # Create a button to close the window
-        close_button = tk.Button(popup, text="Close", command=popup.destroy)
-        close_button.pack()
