@@ -26,9 +26,11 @@ def remove_chao():
     window_width = 600
     window_height = 400
     center_window(remove_window, window_width, window_height)
+    remove_window.configure(bg="lightblue")
 
     gardens = ['Hero', 'Dark', 'Neutral']
     garden_frames = {}
+    buttons = {}  # Dictionary to store button references
 
     # Create a frame for each garden and pack them side by side
     for garden in gardens:
@@ -44,6 +46,12 @@ def remove_chao():
         if os.path.exists(garden):
             for chao_file in os.listdir(garden):
                 chao_name = chao_file.split('.')[0]
-                button = tk.Button(garden_frame, text=chao_name,
-                                   command=lambda name=chao_name, gd=garden: remove_chao_file(name, gd))
+                # Correct the reference to the button in the lambda function
+                button_cmd = lambda name=chao_name, gd=garden, bt=buttons: (
+                    remove_chao_file(name, gd),
+                    bt[name].pack_forget() if name in bt else None
+                )
+                # Create the button and store the reference
+                button = tk.Button(garden_frame, text=chao_name, command=button_cmd)
                 button.pack(pady=2)
+                buttons[chao_name] = button  # Store the button with chao_name as the key

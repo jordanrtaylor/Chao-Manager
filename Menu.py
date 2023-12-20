@@ -78,11 +78,11 @@ def MainMenu():
     remove_chao_button.grid(row=0, column=2, sticky="nsew")
     remove_chao_button.config(width=3, height=2)
 
-    declare_deceased_button = tk.Button(window, text="Declare Deceased", command=lambda: ChaoManager.Chao.declare_deceased())
+    declare_deceased_button = tk.Button(window, text="Declare Deceased", command=lambda: ChaoManager.declare_deceased())
     declare_deceased_button.grid(row=0, column=3, sticky="nsew")
     declare_deceased_button.config(width=3, height=2)
 
-    show_garden_button = tk.Button(window, text="Show Chao Garden", command=lambda: ChaoManager.Chao.show_garden(chao))
+    show_garden_button = tk.Button(window, text="Show Chao Garden", command=lambda: ChaoManager.show_gardens())
     show_garden_button.grid(row=0, column=4, sticky="nsew")
     show_garden_button.config(width=3, height=2)
 

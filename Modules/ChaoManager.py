@@ -5,7 +5,8 @@ from Classes.Chao import Chao
 from .AddChao import add_chao
 from .ModifyChao import open_modify_window
 from .RemoveChao import remove_chao as external_remove_chao
-#from .RemoveChao import remove_chao
+from .DeclareDeceased import declare_deceased as external_declare_deceased
+from .ShowChao import show_chao
 
 def modify_chao(chao):
     open_modify_window(chao)
@@ -14,13 +15,10 @@ def remove_chao():
     external_remove_chao()
 
 def declare_deceased():
-    Chao.not_yet_implemented()
+    external_declare_deceased()
 
-def show_garden(garden):
-    Chao.not_yet_implemented()
-
-def get_garden(chao):
-    Chao.not_yet_implemented()
+def show_gardens():
+    show_chao()
 
 def save_to_file(chao):
     # Create the file name
@@ -90,6 +88,12 @@ def main():
 
     remove_chao_button = tk.Button(window, text="Remove Chao", command=remove_chao)
     remove_chao_button.pack()
+
+    declare_deceased_chao_button = tk.Button(window, text="Declare Deceased", command=declare_deceased)
+    declare_deceased_chao_button.pack()
+
+    show_gardens_button = tk.Button(window, text="Show Gardens", command=show_gardens)
+    show_gardens_button.pack()
 
     window.mainloop()
 

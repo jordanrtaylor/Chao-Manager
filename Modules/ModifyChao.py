@@ -4,7 +4,6 @@ from tkinter import messagebox, scrolledtext
 from Classes.Chao import Chao
 
 def center_window(window, width, height):
-    window.configure(bg="lightblue")
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
     x = (screen_width / 2) - (width / 2)
@@ -47,6 +46,9 @@ def display_chao_data(name, garden):
     data = Chao.load_data(name, garden)
     entries = {}
     for key, value in data.items():
+        # Skip creating an entry for the 'Name' field
+        if key == 'Name':
+            continue
         frame = tk.Frame(scrollable_frame, bg="lightblue")
         frame.pack(fill=tk.X, padx=5, pady=5)
         label = tk.Label(frame, text=f"{key}: ", width=20, bg="lightblue", anchor="w")
@@ -132,31 +134,27 @@ def open_modify_window(chao):
     center_window(modify_window, 600, 400)
     modify_window.configure(bg="lightblue")
 
-    # Create a frame for the labels and pack it at the top
-    label_frame = tk.Frame(modify_window, bg="lightblue")
-    label_frame.pack(side=tk.TOP, fill=tk.X)
-
     gardens = ['Hero', 'Dark', 'Neutral']
     garden_frames = {}
 
     # Create a frame for each garden and pack them side by side
     for garden in gardens:
         garden_frame = tk.Frame(modify_window, bg="lightblue")
-        garden_frame.pack(side=tk.LEFT, expand=True, fill=tk.Y)  # Use fill=tk.Y to align them vertically
+        garden_frame.pack(side=tk.LEFT, expand=True, fill=tk.Y, padx=5, pady=5)
         garden_frames[garden] = garden_frame
 
         # Pack the garden label at the top of its frame
-        label = tk.Label(garden_frame, text=garden.upper(), bg="lightblue")
-        label.pack(side=tk.TOP)
+        label = tk.Label(garden_frame, text=garden.upper(), bg="lightblue", font=("Arial", 16))
+        label.pack(pady=(0, 10))
 
-    # Now iterate over the Chao files and pack them under the corresponding garden
-    for garden in gardens:
+        # Now iterate over the Chao files and pack them under the corresponding garden
         if os.path.exists(garden):
             for chao_file in os.listdir(garden):
                 chao_name = chao_file.split('.')[0]
-                button = tk.Button(garden_frames[garden], text=chao_name,
+                button = tk.Button(garden_frame, text=chao_name,
                                    command=lambda name=chao_name, gd=garden: display_chao_data(name, gd))
-                button.pack()
+                button.pack(pady=2)
+                
 def modify_chao(chao):
     from ChaoManager import Chao
     modify_window = tk.Toplevel()
